@@ -13,8 +13,8 @@ from scipy.stats import norm
 from torch.utils.tensorboard import SummaryWriter
 from torchvision import transforms
 
-from src.py.models.vae import learn
-from src.py.models.vae import Autoencoder
+from src.py.models.autoencoder import learn
+from src.py.models.autoencoder import Autoencoder
 from src.py.utils.digit_plotting import plot_digits
 ```
 
