@@ -3,6 +3,7 @@ import operator
 
 import torch
 import torch.nn as nn
+import torch.nn.functional as F
 
 
 class VariableAutoEncoder(nn.Module):
@@ -48,25 +49,25 @@ class Decoder(nn.Module):
 
     def forward(self, x):
         x = self._l1(x)
-        return x.view(-1, *self._output_dim)
+        x = x.view(-1, *self._output_dim)
+        return x
 
 
-# MOCK
-class Model:  # MOCK
+class Autoencoder:
 
     # MOCK: default variable in the case has bad smell
     def __init__(self, tensor_board_writer, lr=0.001, input_dim=(1, 28, 28),
-                 latent_dim=1):
+                 latent_dim=500):
         self._learn_step_counter = 0
         self._tensor_board_writer = tensor_board_writer
         self._auto_encoder = VariableAutoEncoder(input_dim, latent_dim)
         self._optim = torch.optim.Adam(self._auto_encoder.parameters(), lr=lr)
-        self._loss = nn.MSELoss()
+        self._loss = F.mse_loss
 
     def learn(self, X):
         self._learn_step_counter += 1
         out_X = self._auto_encoder(X)
-        loss = self._loss(X, out_X)
+        loss = self._loss(out_X, X)
 
         self._tensor_board_writer.add_scalar("loss", loss.item(), self._learn_step_counter)
 
@@ -94,5 +95,5 @@ def learn(model, data, num_of_epoch):
     for index in range(num_of_epoch):
         # MOCK: shuffle data
         for X, y in data:
-            model.learn(X)  # MOCK: get stat
+            model.learn(X)
     return model
