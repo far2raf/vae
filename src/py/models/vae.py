@@ -36,7 +36,8 @@ class Encoder(nn.Module):
     def forward(self, x):
         x = x.view(-1, reduce_shape(self._input_dim))
         x = self._l1(x)
-        return x
+        # return x
+        return torch.sigmoid(x)
 
 
 class Decoder(nn.Module):
@@ -50,7 +51,8 @@ class Decoder(nn.Module):
     def forward(self, x):
         x = self._l1(x)
         x = x.view(-1, *self._output_dim)
-        return x
+        # return x
+        return torch.sigmoid(x)
 
 
 class Autoencoder:
@@ -62,7 +64,8 @@ class Autoencoder:
         self._tensor_board_writer = tensor_board_writer
         self._auto_encoder = VariableAutoEncoder(input_dim, latent_dim)
         self._optim = torch.optim.Adam(self._auto_encoder.parameters(), lr=lr)
-        self._loss = F.mse_loss
+        # self._loss = F.mse_loss
+        self._loss = F.binary_cross_entropy
 
     def learn(self, X):
         self._learn_step_counter += 1
